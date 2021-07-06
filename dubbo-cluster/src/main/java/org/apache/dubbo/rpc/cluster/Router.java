@@ -30,6 +30,8 @@ import java.util.List;
  *
  * @see org.apache.dubbo.rpc.cluster.Cluster#join(Directory)
  * @see org.apache.dubbo.rpc.cluster.Directory#list(Invocation)
+ *
+ * 路由
  */
 public interface Router extends Comparable<Router> {
 

@@ -532,8 +532,13 @@ public class ExtensionLoader<T> {
         }
     }
 
+    /**
+     * 获取自适应的拓展对象
+     * @return
+     */
     @SuppressWarnings("unchecked")
     public T getAdaptiveExtension() {
+        //优先从缓存中获取
         Object instance = cachedAdaptiveInstance.get();
         if (instance == null) {
             if (createAdaptiveInstanceError != null) {
@@ -711,11 +716,17 @@ public class ExtensionLoader<T> {
     }
 
     /**
+     *
+     *
+     * 加载SPI
      * synchronized in getExtensionClasses
      * */
     private Map<String, Class<?>> loadExtensionClasses() {
+        //加载当前加载的接口 上的SPI 注解  ，然后获取到默认要加载的Class 的别名     cachedDefaultName
         cacheDefaultExtensionName();
 
+
+        //加载 META-INF下的 这个接口的需要加载的类
         Map<String, Class<?>> extensionClasses = new HashMap<>();
         // internal extension load from ExtensionLoader's ClassLoader first
         loadDirectory(extensionClasses, DUBBO_INTERNAL_DIRECTORY, type.getName(), true);
@@ -828,6 +839,8 @@ public class ExtensionLoader<T> {
                     type + ", class line: " + clazz.getName() + "), class "
                     + clazz.getName() + " is not subtype of interface.");
         }
+
+        //如果是 自适应的 缓存到     cachedAdaptiveClass       有且只允许有一个自适应的
         if (clazz.isAnnotationPresent(Adaptive.class)) {
             cacheAdaptiveClass(clazz);
         } else if (isWrapperClass(clazz)) {
@@ -842,6 +855,7 @@ public class ExtensionLoader<T> {
             }
 
             String[] names = NAME_SEPARATOR.split(name);
+            //缓存那些被激活的 扩展器
             if (ArrayUtils.isNotEmpty(names)) {
                 cacheActivateClass(clazz, names[0]);
                 for (String n : names) {
