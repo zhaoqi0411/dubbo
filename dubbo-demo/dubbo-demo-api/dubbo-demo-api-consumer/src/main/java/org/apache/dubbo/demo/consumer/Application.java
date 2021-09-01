@@ -24,7 +24,10 @@ import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.config.bootstrap.DubboBootstrap;
 import org.apache.dubbo.config.utils.ReferenceConfigCache;
 import org.apache.dubbo.demo.DemoService;
+import org.apache.dubbo.demo.PapaXiongService;
 import org.apache.dubbo.rpc.service.GenericService;
+
+import java.util.Arrays;
 
 public class Application {
     public static void main(String[] args) {
@@ -42,12 +45,16 @@ public class Application {
     private static void runWithBootstrap() {
         ReferenceConfig<DemoService> reference = new ReferenceConfig<>();
         reference.setInterface(DemoService.class);
-        reference.setGeneric("true");
+        reference.setTimeout(-1);
+
+        ReferenceConfig<DemoService> reference2 = new ReferenceConfig<>();
+        reference2.setInterface(PapaXiongService.class);
+
 
         DubboBootstrap bootstrap = DubboBootstrap.getInstance();
         bootstrap.application(new ApplicationConfig("dubbo-demo-api-consumer"))
                 .registry(new RegistryConfig("zookeeper://127.0.0.1:2181"))
-                .reference(reference)
+                .references(Arrays.asList(new ReferenceConfig[]{reference, reference2}))
                 .start();
 
         DemoService demoService = ReferenceConfigCache.getCache().get(reference);

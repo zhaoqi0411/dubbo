@@ -255,6 +255,7 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
 
         serviceMetadata.getAttachments().putAll(map);
 
+        //创建 Dubbo 接口的代理
         ref = createProxy(map);
 
         serviceMetadata.setTarget(ref);

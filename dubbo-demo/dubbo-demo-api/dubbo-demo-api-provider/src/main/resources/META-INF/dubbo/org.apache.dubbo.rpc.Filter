@@ -1,0 +1,2 @@
+configFilter=org.apache.dubbo.demo.provider.filter.ConfigableFilter
+activeFilter=org.apache.dubbo.demo.provider.filter.ActivateFilter

@@ -23,7 +23,9 @@ import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.config.ServiceConfig;
 import org.apache.dubbo.config.bootstrap.DubboBootstrap;
 import org.apache.dubbo.demo.DemoService;
+import org.apache.dubbo.demo.PapaXiongService;
 
+import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 
 public class Application {
@@ -40,14 +42,22 @@ public class Application {
     }
 
     private static void startWithBootstrap() {
-        ServiceConfig<DemoServiceImpl> service = new ServiceConfig<>();
-        service.setInterface(DemoService.class);
-        service.setRef(new DemoServiceImpl());
+        ServiceConfig<DemoServiceImpl> service1 = new ServiceConfig<>();
+        service1.setInterface(DemoService.class);
+        service1.setRef(new DemoServiceImpl());
+        service1.setFilter("configFilter");
+
+
+        ServiceConfig<PapaXiongServiceImpl> service2 = new ServiceConfig<>();
+        service2.setInterface(PapaXiongService.class);
+        service2.setRef(new PapaXiongServiceImpl());
+        service2.setFilter("configFilter");
+
 
         DubboBootstrap bootstrap = DubboBootstrap.getInstance();
         bootstrap.application(new ApplicationConfig("dubbo-demo-api-provider"))
                 .registry(new RegistryConfig("zookeeper://127.0.0.1:2181"))
-                .service(service)
+                .services(Arrays.asList(new ServiceConfig[]{service1, service2}))
                 .start()
                 .await();
     }

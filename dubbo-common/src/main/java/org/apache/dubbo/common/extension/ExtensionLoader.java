@@ -557,6 +557,7 @@ public class ExtensionLoader<T> {
                         createAdaptiveInstanceError);
             }
 
+            //DCL
             synchronized (cachedAdaptiveInstance) {
                 instance = cachedAdaptiveInstance.get();
                 if (instance == null) {
@@ -982,6 +983,7 @@ public class ExtensionLoader<T> {
     }
 
     private Class<?> getAdaptiveExtensionClass() {
+        //防止还没有扫描过 本地的文件
         getExtensionClasses();
         if (cachedAdaptiveClass != null) {
             return cachedAdaptiveClass;
